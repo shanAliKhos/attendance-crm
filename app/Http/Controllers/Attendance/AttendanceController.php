@@ -12,6 +12,37 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
+    public function index()
+    {
+        $attendances = Employee::with('attendances')
+            ->get()
+            ->map(function ($employee) {
+                $latestAttendance = $employee->attendances()->latest()->first();
+
+                return [
+                    'name' => $employee->name,
+                    'check_in' => $latestAttendance ? $latestAttendance->check_in : 'N/A',
+                    'check_out' => $latestAttendance ? $latestAttendance->check_out : 'N/A',
+                    'total_working_hours' => $this->calculateTotalWorkingHours($latestAttendance),
+                ];
+            });
+
+        return response()->json([
+            'data' => $attendances,
+        ]);
+    }
+
+    private function calculateTotalWorkingHours($attendance)
+    {
+        if (!$attendance || !$attendance->check_in || !$attendance->check_out) {
+            return 'N/A';
+        }
+        $checkInTime = Carbon::parse($attendance->check_in);
+        $checkOutTime = Carbon::parse($attendance->check_out);
+
+        return $checkInTime->diffInHours($checkOutTime);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

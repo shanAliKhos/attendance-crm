@@ -2,8 +2,11 @@
 
 namespace App\Imports;
 
+use App\Models\Attendance;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class AttendanceImport implements ToCollection ,WithChunkReading
 {
@@ -20,4 +23,10 @@ class AttendanceImport implements ToCollection ,WithChunkReading
         }
 
     }
+
+    public function chunkSize(): int
+    {
+        return 100;
+    }
+
 }
