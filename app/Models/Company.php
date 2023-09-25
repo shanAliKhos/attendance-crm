@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Location extends Model
+class Company extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function schedules()
+
+    public function asset()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Asset::class);
     }
 
-    public function companies()
+    public function location()
     {
-        return $this->hasMany(Company::class);
+        return $this->hasMany(Location::class);
     }
-
 }
